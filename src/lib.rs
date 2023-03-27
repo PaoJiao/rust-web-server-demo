@@ -1,4 +1,7 @@
-use std::{thread, sync::{mpsc, Arc, Mutex}};
+use std::{
+    sync::{mpsc, Arc, Mutex},
+    thread,
+};
 
 enum Message {
     NewJob(Job),
@@ -25,11 +28,11 @@ pub struct ThreadPool {
 type Job = Box<dyn FnOnce() + Send + 'static>;
 impl ThreadPool {
     /// Create a new ThreadPool
-    /// 
+    ///
     /// The size is the number of threads in the pool
-    /// 
+    ///
     /// # panic
-    /// 
+    ///
     /// The `new` function will panic if the size is zero
     pub fn new(size: usize) -> ThreadPool {
         assert!(size > 0);
@@ -49,7 +52,9 @@ impl ThreadPool {
         F: FnOnce() + Send + 'static,
     {
         let job = Box::new(f);
-        self.sender.send(Message::NewJob(job)).expect("send job err");
+        self.sender
+            .send(Message::NewJob(job))
+            .expect("send job err");
     }
 }
 
@@ -83,7 +88,7 @@ impl Worker {
             // let job = receiver.lock().unwrap().recv().unwrap();
             // while let Ok(job) = receiver.lock().unwrap().recv() {
             //     println!("Worker {} got a job; executing.", id);
-    
+
             //     // (*job)();
             //     // job.call_box();
             //     job();
@@ -102,6 +107,9 @@ impl Worker {
             }
         });
 
-        Worker { id, thread: Some(thread) }
+        Worker {
+            id,
+            thread: Some(thread),
+        }
     }
 }
